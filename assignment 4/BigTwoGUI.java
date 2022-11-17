@@ -31,6 +31,7 @@ public class BigTwoGUI implements CardGameUI{
         //playerList = game.getPlayerList();
 		//handsOnTable = game.getHandsOnTable();
         frame = new JFrame();
+        bigTwoPanel = new BigTwoPanel();
         menuBar = new JMenuBar();
         gameMenu = new JMenu("Game");
         messageMenu = new JMenu("Message");
@@ -41,9 +42,33 @@ public class BigTwoGUI implements CardGameUI{
         
         JPanel rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+
+        JPanel textPanel = new JPanel();
+        JPanel buttonPanel = new JPanel();
+        JPanel bottomPanel = new JPanel();
+        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.X_AXIS));
+
+        JLabel textLabel = new JLabel("Message: ");
+        textPanel.add(textLabel);
+
+        chatInput = new JTextField();
+        chatInput.addActionListener(new chatInputListener());
+        textPanel.add(chatInput);
         
-        msgArea = new JTextArea(10,20);
-        chatArea = new JTextArea(10,20);
+
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
+        bottomPanel.add(buttonPanel);
+        bottomPanel.add(textPanel);
+
+        playButton = new JButton("Play");
+        passButton = new JButton("Pass");
+        playButton.addActionListener(new PlayButtonListener());
+        passButton.addActionListener(new PassButtonListener());
+        buttonPanel.add(playButton);
+        buttonPanel.add(passButton);
+
+        msgArea = new JTextArea();
+        chatArea = new JTextArea();
         msgArea.setLineWrap(true);
         chatArea.setLineWrap(true);
         JScrollPane scroller1 = new JScrollPane(msgArea);
@@ -56,8 +81,7 @@ public class BigTwoGUI implements CardGameUI{
         scroller2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         rightPanel.add(scroller1);
         rightPanel.add(scroller2);
-
-        menuBar.add(gameMenu);
+        menuBar.add(gameMenu);  
         menuBar.add(messageMenu);
         gameMenu.add(restart);
         gameMenu.add(quit);
@@ -66,9 +90,11 @@ public class BigTwoGUI implements CardGameUI{
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        frame.add(new BigTwoPanel(), BorderLayout.CENTER);
+        frame.add(bigTwoPanel, BorderLayout.CENTER);
         frame.add(menuBar,BorderLayout.NORTH);
         frame.add(rightPanel,BorderLayout.EAST);
+        frame.add(bottomPanel,BorderLayout.SOUTH);
+
         frame.pack();
         frame.setVisible(true);
     }
@@ -141,6 +167,12 @@ public class BigTwoGUI implements CardGameUI{
     class QuitMenuItemListener implements ActionListener{
         public void actionPerformed(ActionEvent event){
             
+        }
+    }
+
+    class chatInputListener implements ActionListener{
+        public void actionPerformed(ActionEvent e){
+            chatArea.append(activePlayer + ": " + chatInput.getText() + "\n");
         }
     }
   
