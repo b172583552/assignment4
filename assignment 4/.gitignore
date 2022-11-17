@@ -23,3 +23,7 @@
 /Straight.class
 /StraightFlush.class
 /Triple.class
+/BigTwoGUI$BigTwoPanel$PassButtonListener.class
+/BigTwoGUI$BigTwoPanel$PlayButtonListener.class
+/BigTwoGUI$BigTwoPanel$QuitMenuItemListener.class
+/BigTwoGUI$BigTwoPanel$RestartMenuItemListener.class
