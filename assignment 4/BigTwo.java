@@ -11,7 +11,6 @@ public class BigTwo implements CardGame {
     private ArrayList<CardGamePlayer> playerList = new ArrayList<CardGamePlayer>();
     private ArrayList<Hand> handsOnTable = new ArrayList<Hand>();
     private int currentPlayerIdx;
-    private BigTwoUI ui;
     private int count = 0;
     private BigTwoGUI gui;
     /**
