@@ -2,16 +2,19 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.*;
+
 /**
- * BigTwoGUI
+ * A GUI displaying big two game
+ * 
+ * @author Tom
  */
-public class BigTwoGUI implements CardGameUI{
+public class BigTwoGUI implements CardGameUI {
     private BigTwo game;
     private boolean[] selected = new boolean[13];
     private int activePlayer;
     private ArrayList<CardGamePlayer> playerList; // the list of players
-	private ArrayList<Hand> handsOnTable; // the list of hands played on the table
-	
+    private ArrayList<Hand> handsOnTable; // the list of hands played on the table
+
     private JFrame frame;
     private JMenuBar menuBar;
     private JMenu gameMenu;
@@ -21,24 +24,33 @@ public class BigTwoGUI implements CardGameUI{
     private JMenuItem clearGameMessage;
     private JMenuItem clearChatMessage;
     private JPanel bigTwoPanel;
+    private JLabel label5;
     private JButton playButton;
     private JButton passButton;
     private JTextArea msgArea;
     private JTextArea chatArea;
     private JTextField chatInput;
     private JPanel bottomPanel = new JPanel();
-    public BigTwoGUI(BigTwo game){
+
+    /**
+     * constructor to initialize a GUI
+     * 
+     * @param game bigtwo game
+     */
+    public BigTwoGUI(BigTwo game) {
         this.game = game;
         playerList = game.getPlayerList();
-		handsOnTable = game.getHandsOnTable();
+        handsOnTable = game.getHandsOnTable();
+
         frame = new JFrame();
         bigTwoPanel = new BigTwoPanel();
+
         menuBar = new JMenuBar();
         gameMenu = new JMenu("Game");
         messageMenu = new JMenu("Message");
         restart = new JMenuItem("Restart");
         quit = new JMenuItem("quit");
-        
+
         quit.addActionListener(new QuitMenuItemListener());
         restart.addActionListener(new RestartMenuItemListener());
         clearChatMessage = new JMenuItem("Clear Chat Message");
@@ -54,9 +66,9 @@ public class BigTwoGUI implements CardGameUI{
         passButton.addActionListener(new PassButtonListener());
         buttonPanel.add(playButton);
         buttonPanel.add(passButton);
-        
+
         JPanel textPanel = new JPanel();
-        
+
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.X_AXIS));
 
         JLabel textLabel = new JLabel("Message: ");
@@ -65,15 +77,13 @@ public class BigTwoGUI implements CardGameUI{
         chatInput = new JTextField();
         chatInput.addActionListener(new chatInputListener());
         textPanel.add(chatInput);
-        
 
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
         bottomPanel.add(buttonPanel);
         bottomPanel.add(textPanel);
-        
 
-        msgArea = new JTextArea(10,20);
-        chatArea = new JTextArea(10,20);
+        msgArea = new JTextArea(10, 20);
+        chatArea = new JTextArea(10, 20);
         msgArea.setLineWrap(true);
         chatArea.setLineWrap(true);
         JScrollPane scroller1 = new JScrollPane(msgArea);
@@ -87,7 +97,7 @@ public class BigTwoGUI implements CardGameUI{
         rightPanel.add(scroller1);
         rightPanel.add(scroller2);
 
-        menuBar.add(gameMenu);  
+        menuBar.add(gameMenu);
         menuBar.add(messageMenu);
         gameMenu.add(restart);
         gameMenu.add(quit);
@@ -95,61 +105,92 @@ public class BigTwoGUI implements CardGameUI{
         messageMenu.add(clearGameMessage);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         frame.add(bigTwoPanel, BorderLayout.CENTER);
-        frame.add(menuBar,BorderLayout.NORTH);
-        frame.add(rightPanel,BorderLayout.EAST);
-        frame.add(bottomPanel,BorderLayout.SOUTH);
+        frame.add(menuBar, BorderLayout.NORTH);
+        frame.add(rightPanel, BorderLayout.EAST);
+        frame.add(bottomPanel, BorderLayout.SOUTH);
 
         frame.pack();
 
     }
-    
-    
+
+    /**
+     * make GUI visible
+     */
     public void start() {
-    	frame.setVisible(true);
+        frame.setVisible(true);
     }
-    
-    
-    public void setActivePlayer(int activePlayer){
+
+    /**
+     * set active player
+     */
+    public void setActivePlayer(int activePlayer) {
         this.activePlayer = activePlayer;
     }
 
-    public void repaint(){
+    /**
+     * update the frame
+     */
+    public void repaint() {
         frame.repaint();
     }
 
-    public void printMsg(String msg){
+    /**
+     * print message to msgArea
+     * 
+     * @param msg message
+     */
+    public void printMsg(String msg) {
         msgArea.append(msg);
     }
 
-    public  void clearMsgArea(){
+    /**
+     * clear the message area
+     */
+    public void clearMsgArea() {
         msgArea.setText("");
-        chatArea.setText("");
     }
 
-    public void reset(){
-
+    /**
+     * reset area
+     */
+    public void reset() {
+        resetSelected();
+        clearMsgArea();
+        enable();
     }
 
-    public  void enable(){
-      
+    /**
+     * enable chat input and button press
+     */
+    public void enable() {
+        chatArea.setEnabled(true);
+        this.playButton.setEnabled(true);
+        this.passButton.setEnabled(true);
     }
 
-    public void disable(){
-    	
+    /**
+     * disable chat input and button press
+     */
+    public void disable() {
+        chatArea.setEnabled(false);
+        ;
+        this.playButton.setEnabled(false);
+        this.passButton.setEnabled(false);
     }
-    public int[] getSelected(){
+
+    private int[] getSelected() {
         int count = 0;
-        for (int i=0; i < selected.length; i++){
-            if (selected[i]){
+        for (int i = 0; i < selected.length; i++) {
+            if (selected[i]) {
                 count += 1;
             }
         }
-        int [] cardSelected = new int[count];
+        int[] cardSelected = new int[count];
         int j = 0;
-        for (int i=0; i < selected.length; i++){
-            if (selected[i]){
+        for (int i = 0; i < selected.length; i++) {
+            if (selected[i]) {
                 cardSelected[j] = i;
                 j++;
             }
@@ -157,271 +198,360 @@ public class BigTwoGUI implements CardGameUI{
         return cardSelected;
     }
 
-    public void resetSelected(){
-        for (int i=0; i < selected.length; i++){
-            selected[i]=false;
+    private void resetSelected() {
+        for (int i = 0; i < selected.length; i++) {
+            selected[i] = false;
         }
     }
 
-
-    public void promptActivePlayer(){
-        
-        
+    /**
+     * make move
+     */
+    public void promptActivePlayer() {
         int[] cardIdx = getSelected();
-		resetSelected();
-		game.makeMove(activePlayer, cardIdx);
+        resetSelected();
+        game.makeMove(activePlayer, cardIdx);
     }
 
     /**
-     * InnerBigTwoGUI
+     * set the name of player on the table
+     * 
+     * @param player player number
+     */
+    public void setLabel(int player) {
+        this.label5.setText("Played by player " + player);
+    }
+
+    /**
+     * a panel to display the whole table
+     * 
+     * @author Tom
      */
     class BigTwoPanel extends JPanel {
-    	int canvasSize = 800;
-    	 
-        public BigTwoPanel(){
+        private int canvasSize = 800;
+
+        /**
+         * a constructor to initiatialize components
+         */
+        public BigTwoPanel() {
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-            JPanel player1= new JPanel(new BorderLayout());
-            JPanel player2= new JPanel(new BorderLayout());
-            JPanel player3= new JPanel(new BorderLayout());
-            JPanel player4= new JPanel(new BorderLayout());
-            JPanel cardPlayed= new JPanel(new BorderLayout());
-            
-            
+            JPanel player1 = new JPanel(new BorderLayout());
+            JPanel player2 = new JPanel(new BorderLayout());
+            JPanel player3 = new JPanel(new BorderLayout());
+            JPanel player4 = new JPanel(new BorderLayout());
+            JPanel cardPlayed = new JPanel(new BorderLayout());
+
             JPanel drawPanel1 = new playerPanel(0);
             JPanel drawPanel2 = new playerPanel(1);
             JPanel drawPanel3 = new playerPanel(2);
             JPanel drawPanel4 = new playerPanel(3);
-            JPanel drawPanel5 = new playerPanel(4); //cards on table
-            
+            JPanel drawPanel5 = new playerPanel(4); // cards on table
+
             JLabel label1 = new JLabel("Player 0");
             JLabel label2 = new JLabel("Player 1");
             JLabel label3 = new JLabel("Player 2");
             JLabel label4 = new JLabel("Player 3");
-            JLabel label5 = new JLabel("Played by Player "+ game.getCurrentPlayerIdx());
-            
-            JLabel icon1 = new JLabel(new ImageIcon("1.jpg"));
-            JLabel icon2 = new JLabel(new ImageIcon("1.jpg"));
-            JLabel icon3 = new JLabel(new ImageIcon("1.jpg"));
-            JLabel icon4 = new JLabel(new ImageIcon("1.jpg"));
+            label5 = new JLabel("Played by Player " + activePlayer);
+
+            JLabel icon1 = new JLabel(new ImageIcon("cards\\player1.png"));
+            JLabel icon2 = new JLabel(new ImageIcon("cards\\player2.png"));
+            JLabel icon3 = new JLabel(new ImageIcon("cards\\player3.png"));
+            JLabel icon4 = new JLabel(new ImageIcon("cards\\player4.png"));
             JLabel icon5 = new JLabel(new ImageIcon("cards\\b.gif"));
-            player1.add(label1,BorderLayout.NORTH);
-            player2.add(label2,BorderLayout.NORTH);
-            player3.add(label3,BorderLayout.NORTH);
-            player4.add(label4,BorderLayout.NORTH);
-            cardPlayed.add(label5,BorderLayout.NORTH);
-            
+            player1.add(label1, BorderLayout.NORTH);
+            player2.add(label2, BorderLayout.NORTH);
+            player3.add(label3, BorderLayout.NORTH);
+            player4.add(label4, BorderLayout.NORTH);
+            cardPlayed.add(label5, BorderLayout.NORTH);
+
             player1.add(icon1, BorderLayout.WEST);
             player2.add(icon2, BorderLayout.WEST);
             player3.add(icon3, BorderLayout.WEST);
             player4.add(icon4, BorderLayout.WEST);
-            cardPlayed.add(icon5,BorderLayout.WEST);
-            
-            player1.add(drawPanel1,BorderLayout.CENTER);
-            player2.add(drawPanel2,BorderLayout.CENTER);
-            player3.add(drawPanel3,BorderLayout.CENTER);
-            player4.add(drawPanel4,BorderLayout.CENTER);
-            cardPlayed.add(drawPanel5,BorderLayout.CENTER);
+            cardPlayed.add(icon5, BorderLayout.WEST);
 
-            player1.setBackground(Color.blue);
-            player2.setBackground(Color.red);
+            player1.add(drawPanel1, BorderLayout.CENTER);
+            player2.add(drawPanel2, BorderLayout.CENTER);
+            player3.add(drawPanel3, BorderLayout.CENTER);
+            player4.add(drawPanel4, BorderLayout.CENTER);
+            cardPlayed.add(drawPanel5, BorderLayout.CENTER);
+
+            player1.setBackground(Color.green);
+            player2.setBackground(Color.green);
             player3.setBackground(Color.green);
-            player4.setBackground(Color.yellow);
-            cardPlayed.setBackground(Color.orange);
-            
+            player4.setBackground(Color.green);
+            cardPlayed.setBackground(Color.green);
+
             this.add(player1);
             this.add(player2);
             this.add(player3);
             this.add(player4);
             this.add(cardPlayed);
-            
+
             setPreferredSize(new Dimension(canvasSize, canvasSize));
-            
         }
-
-       
-
-        
     }
-    
-    class playerPanel extends JPanel implements MouseListener{
-        int printNum;
 
-        public playerPanel(int player){
+    /**
+     * a panel to draw the cards for each player
+     * 
+     * @author tom
+     */
+    class playerPanel extends JPanel implements MouseListener {
+        private int printNum;
+
+        /**
+         * add a mouse listener to the panel and set player
+         * 
+         * @param player player
+         */
+        public playerPanel(int player) {
             this.printNum = player;
-            if (printNum < 4){
+            if (printNum < 4) {
                 this.addMouseListener(this);
             }
         }
 
-        public String judgeFile(Card card){
+        private String judgeFile(Card card) {
             String suit = "";
-            if (card.suit == 3){
+            if (card.suit == 3) {
                 suit = "s";
             }
-            
-            if (card.suit == 2){
+
+            if (card.suit == 2) {
                 suit = "h";
             }
-            
-            if (card.suit == 1){
+
+            if (card.suit == 1) {
                 suit = "c";
             }
-            
-            if (card.suit == 0){
+
+            if (card.suit == 0) {
                 suit = "d";
             }
-            
+
             return (card.rank + 1) + suit;
         }
-        public void paintComponent(Graphics g){ 
+
+        /**
+         * paint the cards
+         * 
+         * @param g the graphics
+         */
+        public void paintComponent(Graphics g) {
             int x = 0;
             int y = 20;
-            if (this.printNum < 4){
+            if (this.printNum < 4) {
                 CardGamePlayer player = playerList.get(this.printNum);
                 CardList hand = player.getCardsInHand();
-                for (int i = 0; i < hand.size(); i++){
-                    if (this.printNum == activePlayer){
+                for (int i = 0; i < hand.size(); i++) {
+                    if (this.printNum == activePlayer) {
                         String filename = judgeFile(hand.getCard(i));
                         if (selected[i]) {
-                        	
-                        	g.drawImage(new ImageIcon("cards\\" + filename +".gif").getImage(), x, y-20, this);
-                        }
-                        else {
-                        	g.drawImage(new ImageIcon("cards\\" + filename +".gif").getImage(), x, y, this);
+                            g.drawImage(new ImageIcon("cards\\" + filename + ".gif").getImage(), x, y - 20, this);
+                        } else {
+                            g.drawImage(new ImageIcon("cards\\" + filename + ".gif").getImage(), x, y, this);
                         }
                         x += 20;
-                    }
-                    else{
+                    } else {
                         g.drawImage(new ImageIcon("cards\\b.gif").getImage(), x, y, this);
                         x += 20;
                     }
                 }
             }
-            
-            else if (this.printNum == 4){
-                if (!handsOnTable.isEmpty()){
+
+            else if (this.printNum == 4) {
+                if (!handsOnTable.isEmpty()) {
                     Hand cards = handsOnTable.get(handsOnTable.size() - 1);
-                    for (int i=0; i < cards.size(); i++){
+                    for (int i = 0; i < cards.size(); i++) {
                         String filename = judgeFile(cards.getCard(i));
-                        g.drawImage(new ImageIcon("cards\\" + filename +".gif").getImage(), x, y, this);
+                        g.drawImage(new ImageIcon("cards\\" + filename + ".gif").getImage(), x, y, this);
                         x += 20;
                     }
                 }
             }
-        
 
         }
 
         @Override
+        /**
+         * handle mouse clicked
+         * 
+         * @param e an mouse event
+         */
         public void mouseClicked(MouseEvent e) {
             // TODO Auto-generated method stub
-        	if (activePlayer == printNum){
+            if (activePlayer == printNum) {
                 int x = e.getX();
                 int y = e.getY();
-                for (int i = playerList.get(printNum).getCardsInHand().size()- 1; i >= 0 ; i--){
-                    int cardX = 20*i;
-                    if (!selected[i]){
-                        if (x >= cardX && x <= cardX+73 && y >=20 && y <=20+97){
+                for (int i = playerList.get(printNum).getCardsInHand().size() - 1; i >= 0; i--) {
+                    int cardX = 20 * i;
+                    if (!selected[i]) {
+                        if (x >= cardX && x <= cardX + 73 && y >= 20 && y <= 20 + 97) {
                             selected[i] = true;
-                            msgArea.append(i+" up\n");
                             break;
                         }
-                    }
-                    else {
-                        if (x >= cardX && x <= cardX+73 && y >=0 && y <=0+97){
+                    } else {
+                        if (x >= cardX && x <= cardX + 73 && y >= 0 && y <= 0 + 97) {
                             selected[i] = false;
-                            msgArea.append(i+" down\n");
                             break;
-                            
+
                         }
                     }
                 }
                 frame.repaint();
                 frame.revalidate();
-                msgArea.append(x + " " + y +"\n");
-            }
 
+            }
 
         }
 
+        /**
+         * not used
+         * 
+         * @param e an mouse event
+         */
         @Override
         public void mousePressed(MouseEvent e) {
             // TODO Auto-generated method stub
-            
+
         }
 
+        /**
+         * not used
+         * 
+         * @param e an mouse event
+         */
         @Override
         public void mouseReleased(MouseEvent e) {
             // TODO Auto-generated method stub
-            
+
         }
 
+        /**
+         * not used
+         * 
+         * @param e an mouse event
+         */
         @Override
         public void mouseEntered(MouseEvent e) {
             // TODO Auto-generated method stub
-            
+
         }
 
-		@Override
-		public void mouseExited(MouseEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+        /**
+         * not used
+         * 
+         * @param e an mouse event
+         */
+        @Override
+        public void mouseExited(MouseEvent e) {
+            // TODO Auto-generated method stub
 
-
-
+        }
     }
 
+    /**
+     * a class to handle play button
+     * 
+     * @author Tom
+     */
+    class PlayButtonListener implements ActionListener {
 
-    class PlayButtonListener implements ActionListener{
-        public void actionPerformed(ActionEvent event){
-
-        	boolean action = false;
-            for (int i=0; i < selected.length;i++) {
-            	if (selected[i]) {
-            		action = true;
-            	}
+        /**
+         * make move and update the frame
+         * 
+         * @param event the action event
+         */
+        public void actionPerformed(ActionEvent event) {
+            boolean action = false;
+            for (int i = 0; i < selected.length; i++) {
+                if (selected[i]) {
+                    action = true;
+                }
             }
             if (action) {
-            	promptActivePlayer();
-            	frame.repaint();            	
+                promptActivePlayer();
+                frame.repaint();
             }
         }
     }
 
-    class PassButtonListener implements ActionListener{
-        public void actionPerformed(ActionEvent event){
-        	int[]cardIdx = null;
-    		resetSelected();
-    		game.makeMove(activePlayer, cardIdx);
-    		frame.repaint();
+    /**
+     * a class to handle play button
+     * 
+     * @author Tom
+     */
+    class PassButtonListener implements ActionListener {
+
+        /**
+         * make a pass move and update the frame
+         * 
+         * @param event the action event
+         */
+        public void actionPerformed(ActionEvent event) {
+            int[] cardIdx = null;
+            resetSelected();
+            game.makeMove(activePlayer, cardIdx);
+            frame.repaint();
         }
     }
 
-    class RestartMenuItemListener implements ActionListener{
-        public void actionPerformed(ActionEvent event){
+    /**
+     * restart the game
+     * 
+     * @author Tom
+     */
+    class RestartMenuItemListener implements ActionListener {
+
+        /**
+         * restart the game
+         * 
+         * @param event the action event
+         */
+        public void actionPerformed(ActionEvent event) {
+            frame.dispose();
+            BigTwo game = new BigTwo();
             BigTwoDeck deck = new BigTwoDeck();
             deck.shuffle();
             game.start(deck);
             frame.repaint();
             clearMsgArea();
-
         }
     }
 
+    /**
+     * quit the game
+     * 
+     * @author Tom
+     */
+    class QuitMenuItemListener implements ActionListener {
 
-    class QuitMenuItemListener implements ActionListener{
-        public void actionPerformed(ActionEvent event){
+        /**
+         * quit the game
+         * 
+         * @param event the action event
+         */
+        public void actionPerformed(ActionEvent event) {
             System.exit(0);
         }
     }
 
+    /**
+     * allow chat input
+     * 
+     * @author Tom
+     */
+    class chatInputListener implements ActionListener {
 
-    class chatInputListener implements ActionListener{
-        public void actionPerformed(ActionEvent e){
-            chatArea.append(activePlayer + ": " + chatInput.getText() + "\n");
+        /**
+         * quit the game
+         * 
+         * @param e the action event
+         */
+        public void actionPerformed(ActionEvent e) {
+            chatArea.append("Player " + activePlayer + ": " + chatInput.getText() + "\n");
         }
     }
-  
-}
 
+}

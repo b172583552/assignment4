@@ -13,6 +13,7 @@ public class BigTwo implements CardGame {
     private int currentPlayerIdx;
     private int count = 0;
     private BigTwoGUI gui;
+
     /**
      * construct a big two game
      */
@@ -21,7 +22,6 @@ public class BigTwo implements CardGame {
             CardGamePlayer player = new CardGamePlayer();
             playerList.add(player);
         }
-        //ui = new BigTwoUI(this);
         gui = new BigTwoGUI(this);
     }
 
@@ -121,13 +121,9 @@ public class BigTwo implements CardGame {
             player.sortCardsInHand();
         }
 
-        //ui.setActivePlayer(currentPlayerIdx);
         gui.setActivePlayer(currentPlayerIdx);
-        gui.repaint();
+        gui.setLabel(currentPlayerIdx);
         gui.start();
-        //ui.repaint();
-        //ui.promptActivePlayer();
-
     }
 
     /**
@@ -148,36 +144,31 @@ public class BigTwo implements CardGame {
     public void legalMove(Hand hand) {
         if (hand == null) {
             this.count += 1;
+            gui.printMsg("Player " + currentPlayerIdx + " turn: \n");
             gui.printMsg("{Pass}\n");
-            //ui.printMsg("\n");
         } else {
             this.count = 0;
+            gui.setLabel(currentPlayerIdx);
             gui.printMsg("Player " + currentPlayerIdx + " turn: \n");
             gui.printMsg("{" + hand.getType() + "} " + hand.toString() + "\n");
-            //gui.printMsg("\n");
         }
         if (!endOfGame()) {
             this.currentPlayerIdx = (this.currentPlayerIdx + 1) % 4;
             gui.setActivePlayer(currentPlayerIdx);
-            //gui.repaint();
-            //ui.setActivePlayer(currentPlayerIdx);
-            //ui.repaint();
-            //ui.promptActivePlayer();
         }
 
         else {
-            //ui.repaint();
-            //ui.printMsg("\n");
-            //ui.printMsg("Game ends\n");
+            gui.printMsg("\n");
+            gui.printMsg("Game ends\n");
             for (int i = 0; i < playerList.size(); i++) {
                 int handSize = playerList.get(i).getCardsInHand().size();
                 if (handSize == 0) {
-                    
-                    //ui.printMsg("Player " + i + " wins the game.\n");
+                    gui.printMsg("Player " + i + " wins the game.\n");
                 } else {
-                   // ui.printMsg("Player " + i + " has " + handSize + " cards in hand.\n");
+                    gui.printMsg("Player " + i + " has " + handSize + " cards in hand.\n");
                 }
             }
+            gui.disable();
 
         }
 
@@ -188,7 +179,6 @@ public class BigTwo implements CardGame {
      */
     public void illegalMove() {
         gui.printMsg("Not a legal move!!!\n");
-        //ui.promptActivePlayer();
     }
 
     /**
