@@ -80,9 +80,7 @@ public class BigTwo implements CardGame {
             i.removeAllCards();
         }
 
-        for (Hand j : handsOnTable) {
-            j.removeAllCards();
-        }
+        handsOnTable.clear();
 
         // distribute cards, identify 3 diamond, set active player
         for (int i = 0; i < 13; i++) {
@@ -120,9 +118,9 @@ public class BigTwo implements CardGame {
         for (CardGamePlayer player : playerList) {
             player.sortCardsInHand();
         }
-
+        gui.getLabel().setText("");
+        gui.printMsg("Player " + currentPlayerIdx + "'s turn: \n");
         gui.setActivePlayer(currentPlayerIdx);
-        gui.setLabel(currentPlayerIdx);
         gui.start();
     }
 
@@ -144,16 +142,15 @@ public class BigTwo implements CardGame {
     public void legalMove(Hand hand) {
         if (hand == null) {
             this.count += 1;
-            gui.printMsg("Player " + currentPlayerIdx + " turn: \n");
             gui.printMsg("{Pass}\n");
         } else {
             this.count = 0;
             gui.setLabel(currentPlayerIdx);
-            gui.printMsg("Player " + currentPlayerIdx + " turn: \n");
             gui.printMsg("{" + hand.getType() + "} " + hand.toString() + "\n");
         }
         if (!endOfGame()) {
             this.currentPlayerIdx = (this.currentPlayerIdx + 1) % 4;
+            gui.printMsg("Player " + currentPlayerIdx + "'s turn: \n");
             gui.setActivePlayer(currentPlayerIdx);
         }
 

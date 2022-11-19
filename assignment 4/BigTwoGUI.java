@@ -213,6 +213,10 @@ public class BigTwoGUI implements CardGameUI {
         game.makeMove(activePlayer, cardIdx);
     }
 
+
+    public JLabel getLabel(){
+        return this.label5;
+    }
     /**
      * set the name of player on the table
      * 
@@ -231,7 +235,7 @@ public class BigTwoGUI implements CardGameUI {
         private int canvasSize = 800;
 
         /**
-         * a constructor to initiatialize components
+         * a constructor to initialize components
          */
         public BigTwoPanel() {
             setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -251,7 +255,7 @@ public class BigTwoGUI implements CardGameUI {
             JLabel label2 = new JLabel("Player 1");
             JLabel label3 = new JLabel("Player 2");
             JLabel label4 = new JLabel("Player 3");
-            label5 = new JLabel("Played by Player " + activePlayer);
+            label5 = new JLabel("");
 
             JLabel icon1 = new JLabel(new ImageIcon("cards\\player1.png"));
             JLabel icon2 = new JLabel(new ImageIcon("cards\\player2.png"));
@@ -510,13 +514,14 @@ public class BigTwoGUI implements CardGameUI {
          * @param event the action event
          */
         public void actionPerformed(ActionEvent event) {
-            frame.dispose();
-            BigTwo game = new BigTwo();
+            //frame.dispose();
+            //BigTwo game = new BigTwo();
+        	clearMsgArea();
             BigTwoDeck deck = new BigTwoDeck();
             deck.shuffle();
             game.start(deck);
             frame.repaint();
-            clearMsgArea();
+            
         }
     }
 
